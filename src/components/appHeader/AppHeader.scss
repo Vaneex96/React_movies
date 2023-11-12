@@ -1,0 +1,37 @@
+.app_header {
+  background: url("../../resources/slider_bg1.jpg") center;
+  // display: flex;
+  // justify-content: center;
+  margin: 0 auto;
+  width: auto;
+  .bg-body-tertiary {
+    // opacity: 1;
+    // margin: 0 auto;
+    // width: auto;
+  }
+}
+.bg-body-tertiary {
+  background-color: rgba(0, 125, 215, 0) !important;
+  margin: 0 auto;
+  width: auto;
+  #navbarScrollingDropdown {
+    color: white !important;
+  }
+}
+
+.me-2 {
+  width: 300px;
+  min-width: 300px;
+  max-width: 550px;
+}
+
+.me-2:focus {
+  width: 300px;
+  min-width: 550px;
+  transition: all 0.5s ease;
+}
+
+.navbarScrollingDropdown {
+  &:hover {
+  }
+}

@@ -1,0 +1,62 @@
+.active-btn {
+  background-color: #d81a24 !important;
+  color: white !important;
+}
+
+.popular_movies {
+  .whats_popular {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    &__label {
+      margin-top: 15px;
+      font-size: 30px;
+      font-weight: 500;
+    }
+    &__navbar {
+      display: flex;
+      justify-content: space-between;
+      margin-left: 20px;
+      margin-top: 20px;
+      width: 550px;
+      .btn {
+        // width: 160px;
+        // height: 60px;
+        width: 130px;
+        height: 40px;
+        background-color: white;
+        border-width: 2px;
+        border-color: #d81a24;
+        font-family: "Roboto Slab", serif;
+        color: #d81a24;
+        font-size: 20px;
+        font-weight: 600;
+        transition: all 0.5s;
+
+        &:hover {
+          background-color: #d81a24;
+          color: white;
+        }
+        &:focus {
+          background-color: #d81a24;
+          color: white;
+        }
+      }
+    }
+  }
+
+  .movies-list {
+    margin-top: 20px;
+    display: flex;
+    overflow-x: scroll;
+    &::-webkit-scrollbar {
+      height: 8px;
+      background-color: white;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border-radius: 9em;
+      background-color: grey;
+    }
+  }
+}

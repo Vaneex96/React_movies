@@ -1,0 +1,111 @@
+.active-btn {
+  background-color: #d81a24 !important;
+  color: white !important;
+}
+
+.free_movies {
+  .whats_popular {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    &__label {
+      margin-top: 15px;
+      font-size: 30px;
+      font-weight: 500;
+    }
+    &__navbar {
+      display: flex;
+      justify-content: space-between;
+      margin-left: 20px;
+      margin-top: 20px;
+      width: 270px;
+      .btn {
+        // width: 160px;
+        // height: 60px;
+        width: 130px;
+        height: 40px;
+        background-color: white;
+        border-width: 2px;
+        border-color: #d81a24;
+        font-family: "Roboto Slab", serif;
+        color: #d81a24;
+        font-size: 20px;
+        font-weight: 600;
+        transition: all 0.5s;
+
+        &:hover {
+          background-color: #d81a24;
+          color: white;
+        }
+        &:focus {
+          background-color: #d81a24;
+          color: white;
+        }
+      }
+    }
+  }
+
+  .movies-list {
+    margin-top: 20px;
+    display: flex;
+    overflow-x: scroll;
+    &::-webkit-scrollbar {
+      height: 8px;
+      background-color: white;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border-radius: 9em;
+      background-color: grey;
+    }
+
+    .movie {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      height: 372px;
+      width: 210px;
+      margin-right: 25px;
+      margin-top: 30px;
+      a {
+        display: block;
+        position: relative;
+        width: 200px;
+        height: 300px;
+        .movie__img {
+          cursor: pointer;
+          height: 300px;
+          width: auto;
+          border-radius: 10px;
+          transition: all 0.5s;
+        }
+        .movie__mask {
+          position: absolute;
+          left: 0;
+          height: 300px;
+          width: 200px;
+          border-radius: 10px;
+          background: rgba(0, 0, 0, 0.5);
+          opacity: 0;
+          transition: opacity 0.1s linear;
+          img {
+            margin-left: 79px;
+            margin-top: 119px;
+          }
+          &:hover {
+            opacity: 1;
+          }
+        }
+      }
+      &__name {
+        line-height: 0;
+        font-size: 17px;
+        font-weight: 700;
+      }
+      &__genres {
+        font-size: 13px;
+        color: #b7b7b7;
+      }
+    }
+  }
+}
