@@ -1,0 +1,59 @@
+.app-filters-by-name {
+  margin-top: 50px;
+  height: 350px;
+  width: 250px;
+  border-radius: 10px;
+  border: none;
+  border-radius: 7px;
+  -webkit-box-shadow: 1px 0px 16px -8px rgba(128, 128, 128, 1);
+  -moz-box-shadow: 1px 0px 16px -8px rgba(128, 128, 128, 1);
+  box-shadow: 1px -2px 16px -8px rgba(128, 128, 128, 1);
+  &__header {
+    margin-bottom: 5px;
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+    padding: 17px 0 0 20px;
+    height: 60px;
+    background-color: #d81a24;
+    h2 {
+      color: white;
+      font-size: 20px;
+      text-align: left;
+    }
+  }
+  &__list {
+    padding: 0 0 0 0;
+  }
+  &__li {
+    display: flex;
+    justify-content: space-between;
+    text-align: left;
+    padding: 6px 15px 0 15px;
+    height: 40px;
+    width: 250px;
+    margin-bottom: 5px;
+    list-style-type: none;
+    &:hover {
+      cursor: pointer;
+      background-color: #d81a24;
+      color: white;
+    }
+  }
+  &__counter {
+    height: 25px;
+    width: 30px;
+    border-radius: 10px;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.08);
+  }
+
+  &__name {
+    font-size: 17px;
+    font-weight: 400;
+  }
+
+  .active {
+    background-color: #d81a24;
+    color: white;
+  }
+}

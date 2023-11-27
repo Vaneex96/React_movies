@@ -1,5 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
-import filters from "../appFilters/filtersSlice";
+import filters from "../components/appFilters/filtersSlice";
+import movies from "../components/appSearchedItems/moviesSlice";
+import filtersByName from "../components/appFiltersByName/filtersByNameSlice";
 
 const stringMiddleware = () => (next) => (action) => {
   if (typeof action === "string") {
@@ -11,7 +13,7 @@ const stringMiddleware = () => (next) => (action) => {
 };
 
 const store = configureStore({
-  reducer: { filters },
+  reducer: { filters, movies, filtersByName },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(stringMiddleware),
   devTools: process.env.NODE_ENV !== "production",

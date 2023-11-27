@@ -8,7 +8,7 @@ const AppSearchSection = () => {
     <div className="container">
       <div className="app-search-section">
         <AppFilters />
-        <AppSearchedItems />
+        {/* <AppSearchedItems /> */}
       </div>
     </div>
   );

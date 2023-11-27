@@ -1,3 +1,18 @@
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { setSearchByName } from "../appFilters/filtersSlice";
+import { setSwitcher } from "../appFiltersByName/filtersByNameSlice";
+
+import {
+  fetchMovies,
+  fetchTvShows,
+  fetchCollections,
+  fetchCompanies,
+  fetchKeywords,
+  fetchMulties,
+  fetchPersons,
+} from "../appFiltersByName/filtersByNameSlice";
+
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
@@ -8,6 +23,9 @@ import NavDropdown from "react-bootstrap/NavDropdown";
 import "./AppHeader.scss";
 
 const AppHeader = () => {
+  const dispatch = useDispatch();
+  const [searchValue, setSearchValue] = useState("");
+
   return (
     <div className="app_header">
       <div className="container">
@@ -33,7 +51,9 @@ const AppHeader = () => {
                   id="navbarScrollingDropdown"
                   style={{ fontSize: "20px" }}
                 >
-                  <NavDropdown.Item href="movies">Popular</NavDropdown.Item>
+                  <NavDropdown.Item href="/movies/movies">
+                    Popular
+                  </NavDropdown.Item>
                   <NavDropdown.Item href="#action4">
                     Now Playing
                   </NavDropdown.Item>
@@ -72,14 +92,51 @@ const AppHeader = () => {
               Link
             </Nav.Link> */}
               </Nav>
-              <Form className="d-flex">
+              <Form
+                // id="my_id_111"
+                className="d-flex"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  dispatch(setSwitcher(""));
+                  dispatch(setSearchByName(searchValue));
+
+                  // dispatch(fetchMovies(searchValue));
+                  // dispatch(fetchTvShows(searchValue));
+                  // dispatch(fetchCollections(searchValue));
+                  // dispatch(fetchCompanies(searchValue));
+                  // dispatch(fetchKeywords(searchValue));
+                  // dispatch(fetchMulties(searchValue));
+                  if (
+                    window.location.href !==
+                    "http://localhost:3000/search/search"
+                  ) {
+                    window.location.href =
+                      "http://localhost:3000/search/search";
+                  }
+                }}
+              >
                 <Form.Control
+                  id="37Eh8sh"
+                  name="search"
                   type="search"
                   placeholder="Search"
                   className="me-2"
                   aria-label="Search"
+                  onChange={(e) => {
+                    localStorage.setItem("37Eh8sh", e.target.value);
+                    setSearchValue(e.target.value);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.keyCode === 13) {
+                      e.preventDefault();
+                      document.querySelector(".submit-button").click();
+                    }
+                  }}
                 />
                 <Button
+                  type="submit"
+                  className="submit-button"
+                  // href="/search/search"
                   variant="outline-success"
                   style={{
                     "--bs-btn-border-color": "#d81a24",

@@ -1,4 +1,7 @@
 import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchGenres, fetchLanguages } from "./filtersSlice";
+import { fetchPopularMoviesByFilters } from "../appSearchedItems/moviesSlice";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
@@ -6,8 +9,16 @@ import arror from "../../resources/icons8-forward-26.png";
 import "./AppFilters.scss";
 
 const AppFilters = () => {
+  const dispatch = useDispatch();
   const [sortVisible, setSortVisible] = useState(false);
   const [filtersVisible, setFiltersVisible] = useState(false);
+  const genres = useSelector((state) => state.filters.genres);
+  const languages = useSelector((state) => state.filters.languages);
+
+  useEffect(() => {
+    dispatch(fetchGenres());
+    dispatch(fetchLanguages());
+  }, []);
 
   const onHandleClickSort = () => {
     setSortVisible(!sortVisible);
@@ -16,32 +27,87 @@ const AppFilters = () => {
     setFiltersVisible(!filtersVisible);
   };
 
+  const renderGenres = (arr) => {
+    const genres = arr.map((item) => {
+      return (
+        <label className="checkbox-btn" key={item.id}>
+          <Field type="checkbox" name={item.id} key={item.id} />
+          <span>{item.name}</span>
+        </label>
+      );
+    });
+
+    return genres;
+  };
+
+  const renderLanguages = (arr) => {
+    const languages = arr.map((item) => {
+      return (
+        <option value={item.iso_639_1} key={item.iso_639_1}>
+          {item.english_name}
+        </option>
+      );
+    });
+
+    return languages;
+  };
+
   return (
-    <Formik>
-      <section className="app-filters">
-        <h2>Popular movies</h2>
-        {/*Sort******/}
-        <div
-          className="sort"
-          style={{ height: !sortVisible ? "50px" : "auto" }}
-        >
-          <div className="sort-header" onClick={onHandleClickSort}>
-            <div className="sort-header__title">Sort</div>
-            <img
-              className="sort-header__img"
-              src={arror}
-              alt="arrow"
-              style={{ transform: sortVisible ? "rotate(90deg)" : "none" }}
-            />
-          </div>
-          <hr />
-          <h8 className="sort_label">Sort Results By</h8>
-          <form action="" className="sort_form">
-            <select name="sort_select" id="sort_select" className="sort_select">
-              <option value="Popularity Descending" className="first_option">
-                Popularity Descending
-              </option>
-              <option value="Popularity Ascending">Popularity Ascending</option>
+    <section className="app-filters">
+      <Formik
+        initialValues={{
+          sort_select: "popularity.desc",
+          language: "en",
+        }}
+        onSubmit={(values) => {
+          let stringOfGenres = "";
+
+          for (const k in values) {
+            if (
+              values[k] !== false &&
+              values[k] !== values.sort_select &&
+              values[k] !== values.language
+            ) {
+              stringOfGenres += k + "%2C%20";
+            }
+          }
+
+          dispatch(
+            fetchPopularMoviesByFilters({
+              lang: values.language,
+              genres: stringOfGenres,
+              sortBy: values.sort_select,
+            })
+          );
+        }}
+      >
+        <Form>
+          <h2>Popular movies</h2>
+          {/*Sort******/}
+          <div
+            className="sort"
+            style={{ height: !sortVisible ? "50px" : "auto" }}
+          >
+            <div className="sort-header" onClick={onHandleClickSort}>
+              <div className="sort-header__title">Sort</div>
+              <img
+                className="sort-header__img"
+                src={arror}
+                alt="arrow"
+                style={{ transform: sortVisible ? "rotate(90deg)" : "none" }}
+              />
+            </div>
+            <hr />
+            <h6 className="sort_label">Sort Results By</h6>
+            {/* <form action="" className="sort_form"> */}
+            <Field
+              name="sort_select"
+              id="sort_select"
+              className="sort_select"
+              as="select"
+            >
+              <option value="popularity.desc">Popularity Descending</option>
+              <option value="popularity.asc">Popularity Ascending</option>
               <option value="Rating Descending">Rating Descending</option>
               <option value="Rating Ascending">Rating Ascending</option>
               <option value="Release Date Descending">
@@ -52,71 +118,48 @@ const AppFilters = () => {
               </option>
               <option value="Title(A-Z)">Title (A-Z)</option>
               <option value="Title(Z-A)">Title (Z-A)</option>
-            </select>
-          </form>
-        </div>
-        {/*Sort******/}
-
-        {/* Filters */}
-        <div
-          className="filters"
-          style={{ height: !filtersVisible ? "50px" : "auto" }}
-        >
-          <div className="filters-header" onClick={onHandleClickFilters}>
-            <div className="filters-header__title">Filters</div>
-            <img
-              className="filters-header__img"
-              src={arror}
-              alt="arrow"
-              style={{ transform: filtersVisible ? "rotate(90deg)" : "none" }}
-            />
+            </Field>
+            {/* </form> */}
           </div>
-          <hr />
-          <form action="" className="filters__form">
-            <h8 className="filters__genres_label">Genres</h8>
-            <div className="filters__genres">
-              <label class="checkbox-btn">
-                <input type="checkbox" />
-                <span>Action</span>
-              </label>
+          {/*Sort******/}
 
-              <label class="checkbox-btn">
-                <input type="checkbox" />
-                <span>Adventure</span>
-              </label>
-
-              <label class="checkbox-btn">
-                <input type="checkbox" />
-                <span>Animation</span>
-              </label>
-
-              <label class="checkbox-btn">
-                <input type="checkbox" />
-                <span>Comedy</span>
-              </label>
-
-              <label class="checkbox-btn">
-                <input type="checkbox" />
-                <span>Crime</span>
-              </label>
+          {/* Filters */}
+          <div
+            className="filters"
+            style={{ height: !filtersVisible ? "50px" : "auto" }}
+          >
+            <div className="filters-header" onClick={onHandleClickFilters}>
+              <div className="filters-header__title">Filters</div>
+              <img
+                className="filters-header__img"
+                src={arror}
+                alt="arrow"
+                style={{ transform: filtersVisible ? "rotate(90deg)" : "none" }}
+              />
             </div>
             <hr />
-            <h8 className="filters__genres_label">Language</h8>
-            <select
-              name="filters_select"
-              id="filters_select"
-              className="filters_select"
+            {/* <form action="" className="filters__form"> */}
+            <h6 className="filters__genres_label">Genres</h6>
+            <div className="filters__genres">{renderGenres(genres)}</div>
+            <hr />
+            <h6 className="filters__genres_label">Language</h6>
+            <Field
+              name="language"
+              id="language"
+              className="language"
+              as="select"
             >
-              <option value="English">English</option>
-              <option value="Ukrainian">Ukrainian</option>
-              <option value="Polish">Polish</option>
-            </select>
-          </form>
-        </div>
-        {/* Filters */}
-        <button className="search">Search</button>
-      </section>
-    </Formik>
+              {renderLanguages(languages)}
+            </Field>
+            {/* </form> */}
+          </div>
+          {/* Filters */}
+          <button className="search" type="submit">
+            Search
+          </button>
+        </Form>
+      </Formik>
+    </section>
   );
 };
 

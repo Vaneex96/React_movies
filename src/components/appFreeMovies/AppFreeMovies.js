@@ -21,7 +21,7 @@ const AppFreeMovies = () => {
                 alt="movie"
                 className="movie__img"
               />
-              <span class="movie__mask">
+              <span className="movie__mask">
                 <img src={play} alt="" />
               </span>
             </a>
@@ -36,7 +36,7 @@ const AppFreeMovies = () => {
                 alt="movie"
                 className="movie__img"
               />
-              <span class="movie__mask">
+              <span className="movie__mask">
                 <img src={play} alt="" />
               </span>
             </a>
@@ -51,7 +51,7 @@ const AppFreeMovies = () => {
                 alt="movie"
                 className="movie__img"
               />
-              <span class="movie__mask">
+              <span className="movie__mask">
                 <img src={play} alt="" />
               </span>
             </a>
@@ -66,7 +66,7 @@ const AppFreeMovies = () => {
                 alt="movie"
                 className="movie__img"
               />
-              <span class="movie__mask">
+              <span className="movie__mask">
                 <img src={play} alt="" />
               </span>
             </a>
@@ -81,7 +81,7 @@ const AppFreeMovies = () => {
                 alt="movie"
                 className="movie__img"
               />
-              <span class="movie__mask">
+              <span className="movie__mask">
                 <img src={play} alt="" />
               </span>
             </a>
@@ -96,7 +96,7 @@ const AppFreeMovies = () => {
                 alt="movie"
                 className="movie__img"
               />
-              <span class="movie__mask">
+              <span className="movie__mask">
                 <img src={play} alt="" />
               </span>
             </a>
@@ -111,7 +111,7 @@ const AppFreeMovies = () => {
                 alt="movie"
                 className="movie__img"
               />
-              <span class="movie__mask">
+              <span className="movie__mask">
                 <img src={play} alt="" />
               </span>
             </a>
@@ -126,7 +126,7 @@ const AppFreeMovies = () => {
                 alt="movie"
                 className="movie__img"
               />
-              <span class="movie__mask">
+              <span className="movie__mask">
                 <img src={play} alt="" />
               </span>
             </a>

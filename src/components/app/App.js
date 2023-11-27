@@ -6,6 +6,7 @@ import AppPopularMovies from "../appPopularMovies/AppPopularMovies";
 import AppFreeMovies from "../appFreeMovies/AppFreeMovies";
 import AppNewsletter from "../appNewsletter/AppNewsletter";
 import AppSearchSection from "../appSearchSection/AppSearchSection";
+import AppSearchByNameSection from "../appSearchByNameSection/AppSearchByNameSection";
 import Page404 from "../page404/Page404";
 
 import "./App.scss";
@@ -28,7 +29,8 @@ function App() {
                 </>
               }
             />
-            <Route path="/movies" element={<AppSearchSection />} />
+            <Route path="/movies/:id" element={<AppSearchSection />} />
+            <Route path="/search/:id" element={<AppSearchByNameSection />} />
             <Route path="*" element={<Page404 />} />
           </Routes>
         </main>
