@@ -1,5 +1,5 @@
 import AppFilters from "../appFilters/AppFilters";
-import AppSearchedItems from "../appSearchedItems/AppSearchedItems";
+import AppSearchedItems from "../appSearchedItemsByName/AppSearchedItemsByName.js";
 
 import "./AppSearchSection.scss";
 
@@ -8,7 +8,7 @@ const AppSearchSection = () => {
     <div className="container">
       <div className="app-search-section">
         <AppFilters />
-        {/* <AppSearchedItems /> */}
+        <AppSearchedItems />
       </div>
     </div>
   );

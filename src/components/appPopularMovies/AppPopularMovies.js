@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchPopularMovies } from "../appSearchedItems/moviesSlice";
+import { fetchPopularMovies } from "../appSearchedItemsByName/moviesSlice";
 import { fetchGenres } from "../appFilters/filtersSlice";
 
 import AppMovieTemplate from "../appMovieTemplate/AppMovieTemplate";

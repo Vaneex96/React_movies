@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchGenres, fetchLanguages } from "./filtersSlice";
-import { fetchPopularMoviesByFilters } from "../appSearchedItems/moviesSlice";
+import { fetchPopularMoviesByFilters } from "../appSearchedItemsByName/moviesSlice";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 

@@ -1,11 +1,15 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { useHttp } from "../../hooks/http.hook";
+import { useHttps } from "../../hooks/http.hook copy";
 
 const initialState = {
-  popularMovies: { results: [] },
+  popularMovies: {
+    results: [],
+  },
   loadingStatus: "idle",
   genreMatch: {},
   // movieByNameLoadingStatus: "idle",
+  imagesOfMovie: [],
   objectOfFilters: {
     12: "Adventure",
     14: "Fantasy",
@@ -27,17 +31,48 @@ const initialState = {
     10752: "War",
     10770: "TV Movie",
   },
+  objectOfEmployees: {},
 };
 
 export const fetchPopularMovies = createAsyncThunk(
   "movies/fetchPopularMovies",
-  () => {
+  (movieList) => {
     const { request } = useHttp();
     return request(
-      "https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc"
+      `https://api.themoviedb.org/3/movie/${movieList}?language=en-US&page=1`
     );
   }
 );
+
+// export const fetchNowPlayingMovies = createAsyncThunk(
+//   "movies/fetchNowPlayingMovies",
+//   () => {
+//     const { request } = useHttp();
+//     return request(
+//       "https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=1"
+//     );
+//   }
+// );
+
+// export const fetchUpcommingMovies = createAsyncThunk(
+//   "movies/fetchUpcommingMovies",
+//   () => {
+//     const { request } = useHttp();
+//     return request(
+//       "https://api.themoviedb.org/3/movie/upcoming?language=en-US&page=1"
+//     );
+//   }
+// );
+
+// export const fetchTopRatedMovies = createAsyncThunk(
+//   "movies/fetchTopRatedMovies",
+//   () => {
+//     const { request } = useHttp();
+//     return request(
+//       "https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1"
+//     );
+//   }
+// );
 
 export const fetchPopularMoviesByFilters = createAsyncThunk(
   "movies/fetchPopularMoviesByFilters",
@@ -59,6 +94,22 @@ export const fetchMovieByName = createAsyncThunk(
   }
 );
 
+export const fetchImagesMovieById = createAsyncThunk(
+  "movies/fetchImagesMovieById",
+  (id) => {
+    const { request } = useHttp();
+    return request(`https://api.themoviedb.org/3/movie/${id}/images`);
+  }
+);
+
+export const fetchListOfEnployee = createAsyncThunk(
+  "movies/fetchListOfEnployee",
+  () => {
+    const { request } = useHttps();
+    return request("http://localhost:8080/people/employees/5");
+  }
+);
+
 const moviesSlice = createSlice({
   name: "movies",
   initialState,
@@ -69,6 +120,7 @@ const moviesSlice = createSlice({
         state.loadingStatus = "loading";
       })
       .addCase(fetchPopularMovies.fulfilled, (state, action) => {
+        console.log("lox");
         state.loadingStatus = "idle";
         state.popularMovies = action.payload;
 
@@ -116,6 +168,45 @@ const moviesSlice = createSlice({
       .addCase(fetchPopularMoviesByFilters.rejected, (state) => {
         state.loadingStatus = "error";
       })
+      .addCase(fetchImagesMovieById.fulfilled, (state, action) => {
+        console.log(action.payload);
+        state.imagesOfMovie.push(action.payload.posters[0]);
+      })
+      .addCase(fetchListOfEnployee.pending, (state) => {
+        state.loadingStatus = "loading";
+      })
+      .addCase(fetchListOfEnployee.fulfilled, (state, action) => {
+        state.loadingStatus = "idle";
+        state.objectOfEmployees = action.payload;
+        console.log("lalala");
+        console.log(action.payload);
+      })
+      .addCase(fetchListOfEnployee.rejected, (state) => {
+        state.loadingStatus = "error";
+        console.log("ERROR!!!!!!!!!!!!!!!");
+      })
+      // .addCase(fetchUpcommingMovies.pending, (state) => {
+      //   state.loadingStatus = "loading";
+      // })
+      // .addCase(fetchUpcommingMovies.fulfilled, (state, action) => {
+      //   state.loadingStatus = "idle";
+      //   state.popularMovies = action.payload;
+      //   console.log("pizda");
+      // })
+      // .addCase(fetchUpcommingMovies.rejected, (state) => {
+      //   state.loadingStatus = "error";
+      // })
+      // .addCase(fetchTopRatedMovies.pending, (state) => {
+      //   state.loadingStatus = "loading";
+      // })
+      // .addCase(fetchTopRatedMovies.fulfilled, (state, action) => {
+      //   state.loadingStatus = "idle";
+      //   state.popularMovies = action.payload;
+      //   console.log("pizda");
+      // })
+      // .addCase(fetchTopRatedMovies.rejected, (state) => {
+      //   state.loadingStatus = "error";
+      // })
       .addDefaultCase(() => {});
   },
 });

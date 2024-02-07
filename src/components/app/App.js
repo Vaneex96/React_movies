@@ -30,6 +30,7 @@ function App() {
               }
             />
             <Route path="/movies/:id" element={<AppSearchSection />} />
+            <Route path="/tv/:id" element={<AppSearchSection />} />
             <Route path="/search/:id" element={<AppSearchByNameSection />} />
             <Route path="*" element={<Page404 />} />
           </Routes>

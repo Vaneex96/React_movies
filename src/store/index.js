@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import filters from "../components/appFilters/filtersSlice";
-import movies from "../components/appSearchedItems/moviesSlice";
+import movies from "../components/appSearchedItemsByName/moviesSlice";
 import filtersByName from "../components/appFiltersByName/filtersByNameSlice";
 
 const stringMiddleware = () => (next) => (action) => {

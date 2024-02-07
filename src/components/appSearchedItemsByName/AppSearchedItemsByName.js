@@ -6,6 +6,10 @@ import {
   fetchPopularMovies,
   fetchMovieByName,
   fetchPopularMoviesByFilters,
+  fetchNowPlayingMovies,
+  fetchUpcommingMovies,
+  fetchTopRatedMovies,
+  fetchListOfEnployee,
 } from "./moviesSlice";
 
 import {
@@ -25,11 +29,11 @@ import {
 
 import AppMovieTemplate from "../appMovieTemplate/AppMovieTemplate";
 import Spinner from "../Spinner/Spinner";
-import "./AppSearchedItems.scss";
+import "./AppSearchedItemsByName.scss";
 import play from "../../resources/icons8-play-50.png";
 import movie from "../../resources/icons8-picture.svg";
 
-const AppSearchedItems = () => {
+const AppSearchedItemsByName = () => {
   const dispatch = useDispatch();
   let popularMovies = useSelector(
     (state) => state.movies.popularMovies.results
@@ -51,6 +55,10 @@ const AppSearchedItems = () => {
   const keywords = useSelector((state) => state.filtersByName.keywords.results);
   const multies = useSelector((state) => state.filtersByName.multies.results);
 
+  const Employee = useSelector((state) => state.movies.objectOfEmployees);
+
+  // console.log(Employee);
+
   //////end///////Get items from filtersByName state
   const params = useParams();
 
@@ -58,23 +66,50 @@ const AppSearchedItems = () => {
 
   const localStorageSearchByName = localStorage.getItem("37Eh8sh");
 
+  const arrOfActions = [
+    fetchMovieByName,
+    fetchMovies,
+    fetchTvShows,
+    fetchCollections,
+    fetchCompanies,
+    fetchKeywords,
+    fetchMulties,
+    fetchPersons,
+  ];
+
   console.log("render");
 
   useEffect(() => {
-    if (params.id === "search") {
-      dispatch(setActiveFilter("movies"));
-      dispatch(fetchMovieByName(localStorageSearchByName));
+    dispatch(fetchListOfEnployee());
+    switch (params.id) {
+      case "search":
+        dispatch(setActiveFilter("movies"));
+        arrOfActions.forEach((action) =>
+          dispatch(action(localStorageSearchByName))
+        );
+        break;
 
-      dispatch(fetchMovies(localStorageSearchByName));
-      dispatch(fetchTvShows(localStorageSearchByName));
-      dispatch(fetchCollections(localStorageSearchByName));
-      dispatch(fetchCompanies(localStorageSearchByName));
-      dispatch(fetchKeywords(localStorageSearchByName));
-      dispatch(fetchMulties(localStorageSearchByName));
-      dispatch(fetchPersons(localStorageSearchByName));
-    } else {
-      dispatch(setActiveFilter("movies"));
-      dispatch(fetchPopularMovies());
+      case "popular":
+        dispatch(fetchPopularMovies("popular"));
+        break;
+
+      case "now_playing":
+        // dispatch(fetchNowPlayingMovies());
+        dispatch(fetchPopularMovies("now_playing"));
+        break;
+
+      case "upcoming":
+        // dispatch(fetchUpcommingMovies());
+        dispatch(fetchPopularMovies("upcoming"));
+        break;
+
+      case "top_rated":
+        // dispatch(fetchTopRatedMovies());
+        dispatch(fetchPopularMovies("top_rated"));
+        break;
+
+      default:
+        break;
     }
   }, [searchByName]);
 
@@ -166,4 +201,4 @@ const AppSearchedItems = () => {
   );
 };
 
-export default AppSearchedItems;
+export default AppSearchedItemsByName;

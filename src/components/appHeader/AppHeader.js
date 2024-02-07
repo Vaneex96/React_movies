@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector, useEffect } from "react-redux";
 import { setSearchByName } from "../appFilters/filtersSlice";
 import { setSwitcher } from "../appFiltersByName/filtersByNameSlice";
 
@@ -26,6 +26,12 @@ const AppHeader = () => {
   const dispatch = useDispatch();
   const [searchValue, setSearchValue] = useState("");
 
+  // const Employee = useSelector(state => state.movies.objectOfEmployees);
+
+  // useEffect(() => {
+  //     dispatch()
+  // }, [])
+
   return (
     <div className="app_header">
       <div className="container">
@@ -51,26 +57,32 @@ const AppHeader = () => {
                   id="navbarScrollingDropdown"
                   style={{ fontSize: "20px" }}
                 >
-                  <NavDropdown.Item href="/movies/movies">
+                  <NavDropdown.Item href="/movies/popular">
                     Popular
                   </NavDropdown.Item>
-                  <NavDropdown.Item href="#action4">
+                  <NavDropdown.Item href="/movies/now_playing">
                     Now Playing
                   </NavDropdown.Item>
-                  <NavDropdown.Item href="#action5">Upcoming</NavDropdown.Item>
-                  <NavDropdown.Item href="#action6">Top Rated</NavDropdown.Item>
+                  <NavDropdown.Item href="/movies/upcoming">
+                    Upcoming
+                  </NavDropdown.Item>
+                  <NavDropdown.Item href="/movies/top_rated">
+                    Top Rated
+                  </NavDropdown.Item>
                 </NavDropdown>
                 <NavDropdown
                   title="Series"
                   id="navbarScrollingDropdown"
                   style={{ fontSize: "20px" }}
                 >
-                  <NavDropdown.Item href="#action3">Action</NavDropdown.Item>
-                  <NavDropdown.Item href="#action4">
-                    Another action
+                  <NavDropdown.Item href="/tv/popular">
+                    Popular
+                  </NavDropdown.Item>
+                  <NavDropdown.Item href="/tv/top_rated">
+                    Top Rated
                   </NavDropdown.Item>
                   <NavDropdown.Divider />
-                  <NavDropdown.Item href="#action5">
+                  <NavDropdown.Item href="/movies/upcoming">
                     Something else here
                   </NavDropdown.Item>
                 </NavDropdown>
