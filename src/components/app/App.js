@@ -8,6 +8,8 @@ import AppNewsletter from "../appNewsletter/AppNewsletter";
 import AppSearchSection from "../appSearchSection/AppSearchSection";
 import AppSearchByNameSection from "../appSearchByNameSection/AppSearchByNameSection";
 import Page404 from "../page404/Page404";
+import AppLoginRegistration from "../appLoginRegistration/AppLoginRegistration";
+import AppUserPageTemplate from "../appUserPageTemplate/AppUserPageTemplate";
 
 import "./App.scss";
 
@@ -29,6 +31,8 @@ function App() {
                 </>
               }
             />
+            <Route path="/login" element={<AppLoginRegistration />} />
+            <Route path="/user/:id" element={<AppUserPageTemplate />} />
             <Route path="/movies/:id" element={<AppSearchSection />} />
             <Route path="/tv/:id" element={<AppSearchSection />} />
             <Route path="/search/:id" element={<AppSearchByNameSection />} />

@@ -4,19 +4,20 @@ export const useHttp = () => {
     method = "GET",
     body = null,
     headers = {
+      "Content-Type": "application/json",
       accept: "application/json",
-      Authorization:
-        "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5ZmI1YzZmN2I4YjRlMWRjYWJlYzkyN2Q2NmIzYjNhNiIsInN1YiI6IjY1NDdjOTNmOWNjNjdiMDBkZjkzY2MzZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.wrffqV0ov86XGUhffvJ2VfGgzNZZraDKtu6p4qaYM8U",
     }
   ) => {
     try {
       const response = await fetch(url, { method, body, headers });
 
       if (!response.ok) {
-        throw new Error(`Could not fetch ${url}, status ${response.status}`);
+        throw new Error(`Could not fetch ${url}, status ${response}`);
       }
 
       const data = await response.json();
+
+      console.log("Data" + data);
 
       return data;
     } catch (e) {

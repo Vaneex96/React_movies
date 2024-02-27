@@ -162,6 +162,10 @@ const AppHeader = () => {
                   Search
                 </Button>
               </Form>
+              <div className="login">
+                <a href="http://localhost:3000/login">Sing in</a>
+                <a href="http://localhost:3000/registration">Sing up</a>
+              </div>
             </Navbar.Collapse>
           </Container>
         </Navbar>

@@ -12,6 +12,19 @@
       color: white !important;
     }
   }
+
+  .login {
+    padding: 0 0 0 0;
+    width: 130px;
+    // margin-bottom: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+
+    a {
+      color: white;
+    }
+  }
 }
 
 .me-2 {

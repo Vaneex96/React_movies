@@ -3,6 +3,10 @@ import { useHttp } from "../../hooks/http.hook";
 import { useHttps } from "../../hooks/http.hook copy";
 
 const initialState = {
+  serverAddress: "http://localhost:8080",
+  clientAddress: "http://localhost:3000",
+  favoritesMovies: [],
+  jwtToken: "",
   popularMovies: {
     results: [],
   },
@@ -34,6 +38,37 @@ const initialState = {
   objectOfEmployees: {},
 };
 
+export const fetchJwtToken = createAsyncThunk(
+  "movies/fetchJwtToken",
+  (user) => {
+    const { request } = useHttp();
+    return request(
+      initialState.serverAddress + "/auth",
+      "POST",
+      JSON.stringify(user)
+    );
+  }
+);
+
+export const fetchFavoriteMovies = createAsyncThunk(
+  "movies/fetchFavoriteMovies",
+  (id) => {
+    const { request } = useHttp();
+    console.log(`Bearer ${localStorage.getItem(id)}`);
+    return request(
+      `${initialState.serverAddress}/id/${id}/favorites_movies`,
+      "GET",
+      null,
+      {
+        "Content-Type": "application/json",
+        accept: "application/json",
+        Authorization: `Bearer ${localStorage.getItem(id)}`,
+      }
+    );
+  }
+);
+
+///////////////////////////////////////////////////////////////////////////////////////////////
 export const fetchPopularMovies = createAsyncThunk(
   "movies/fetchPopularMovies",
   (movieList) => {
@@ -102,14 +137,6 @@ export const fetchImagesMovieById = createAsyncThunk(
   }
 );
 
-export const fetchListOfEnployee = createAsyncThunk(
-  "movies/fetchListOfEnployee",
-  () => {
-    const { request } = useHttps();
-    return request("http://localhost:8080/people/employees/5");
-  }
-);
-
 const moviesSlice = createSlice({
   name: "movies",
   initialState,
@@ -120,7 +147,6 @@ const moviesSlice = createSlice({
         state.loadingStatus = "loading";
       })
       .addCase(fetchPopularMovies.fulfilled, (state, action) => {
-        console.log("lox");
         state.loadingStatus = "idle";
         state.popularMovies = action.payload;
 
@@ -172,26 +198,39 @@ const moviesSlice = createSlice({
         console.log(action.payload);
         state.imagesOfMovie.push(action.payload.posters[0]);
       })
-      .addCase(fetchListOfEnployee.pending, (state) => {
+      .addCase(fetchJwtToken.pending, (state) => {
         state.loadingStatus = "loading";
       })
-      .addCase(fetchListOfEnployee.fulfilled, (state, action) => {
+      .addCase(fetchJwtToken.fulfilled, (state, action) => {
         state.loadingStatus = "idle";
-        state.objectOfEmployees = action.payload;
-        console.log("lalala");
+        state.jwtToken = action.payload.token;
+        localStorage.setItem(action.payload.id, action.payload.token);
+
+        if (state.jwtToken !== "") {
+          window.location.href = `${initialState.clientAddress}/user/${action.payload.id}`;
+        }
+      })
+      .addCase(fetchJwtToken.rejected, (state) => {
+        state.loadingStatus = "error";
+      })
+      .addCase(fetchFavoriteMovies.pending, (state) => {
+        state.loadingStatus = "loading";
+      })
+      .addCase(fetchFavoriteMovies.fulfilled, (state, action) => {
+        state.loadingStatus = "idle";
+        state.favoritesMovies = action.payload;
         console.log(action.payload);
       })
-      .addCase(fetchListOfEnployee.rejected, (state) => {
+      .addCase(fetchFavoriteMovies.rejected, (state) => {
         state.loadingStatus = "error";
-        console.log("ERROR!!!!!!!!!!!!!!!");
       })
+
       // .addCase(fetchUpcommingMovies.pending, (state) => {
       //   state.loadingStatus = "loading";
       // })
       // .addCase(fetchUpcommingMovies.fulfilled, (state, action) => {
       //   state.loadingStatus = "idle";
       //   state.popularMovies = action.payload;
-      //   console.log("pizda");
       // })
       // .addCase(fetchUpcommingMovies.rejected, (state) => {
       //   state.loadingStatus = "error";
@@ -202,7 +241,6 @@ const moviesSlice = createSlice({
       // .addCase(fetchTopRatedMovies.fulfilled, (state, action) => {
       //   state.loadingStatus = "idle";
       //   state.popularMovies = action.payload;
-      //   console.log("pizda");
       // })
       // .addCase(fetchTopRatedMovies.rejected, (state) => {
       //   state.loadingStatus = "error";

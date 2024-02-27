@@ -9,7 +9,6 @@ import {
   fetchNowPlayingMovies,
   fetchUpcommingMovies,
   fetchTopRatedMovies,
-  fetchListOfEnployee,
 } from "./moviesSlice";
 
 import {
@@ -55,8 +54,6 @@ const AppSearchedItemsByName = () => {
   const keywords = useSelector((state) => state.filtersByName.keywords.results);
   const multies = useSelector((state) => state.filtersByName.multies.results);
 
-  const Employee = useSelector((state) => state.movies.objectOfEmployees);
-
   // console.log(Employee);
 
   //////end///////Get items from filtersByName state
@@ -80,7 +77,6 @@ const AppSearchedItemsByName = () => {
   console.log("render");
 
   useEffect(() => {
-    dispatch(fetchListOfEnployee());
     switch (params.id) {
       case "search":
         dispatch(setActiveFilter("movies"));
