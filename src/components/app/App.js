@@ -8,10 +8,12 @@ import AppNewsletter from "../appNewsletter/AppNewsletter";
 import AppSearchSection from "../appSearchSection/AppSearchSection";
 import AppSearchByNameSection from "../appSearchByNameSection/AppSearchByNameSection";
 import Page404 from "../page404/Page404";
-import AppLoginRegistration from "../appLoginRegistration/AppLoginRegistration";
+import AppLogin from "../appLogin/AppLogin";
 import AppUserPageTemplate from "../appUserPageTemplate/AppUserPageTemplate";
 
 import "./App.scss";
+import AppRegistration from "../appRegistration/AppRegistration";
+import AppRegistrationConfirmed from "../appRegistrationConfirmed/AppRegistrationConfirmed";
 
 function App() {
   return (
@@ -31,7 +33,12 @@ function App() {
                 </>
               }
             />
-            <Route path="/login" element={<AppLoginRegistration />} />
+            <Route
+              path="/account_activation/:code"
+              element={<AppRegistrationConfirmed />}
+            />
+            <Route path="/registration" element={<AppRegistration />} />
+            <Route path="/login" element={<AppLogin />} />
             <Route path="/user/:id" element={<AppUserPageTemplate />} />
             <Route path="/movies/:id" element={<AppSearchSection />} />
             <Route path="/tv/:id" element={<AppSearchSection />} />

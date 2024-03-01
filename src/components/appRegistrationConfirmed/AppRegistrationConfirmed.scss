@@ -1,0 +1,15 @@
+.success_section {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  h4 {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  a {
+    font-size: 20px;
+    text-align: center;
+    color: black;
+    text-decoration: none;
+  }
+}

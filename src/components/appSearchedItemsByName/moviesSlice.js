@@ -5,8 +5,13 @@ import { useHttps } from "../../hooks/http.hook copy";
 const initialState = {
   serverAddress: "http://localhost:8080",
   clientAddress: "http://localhost:3000",
+  activationAccountStatusLoading: "idle",
+  isUserNameExist: false,
+  isUserNameExistStatusLoading: "idle",
+  loadingUserDataStatus: "idle",
   favoritesMovies: [],
   jwtToken: "",
+  user: null,
   popularMovies: {
     results: [],
   },
@@ -38,12 +43,42 @@ const initialState = {
   objectOfEmployees: {},
 };
 
+export const fetchConfirmEmail = createAsyncThunk(
+  "movies/fetchConfirmEmail",
+  (code) => {
+    const { request } = useHttp();
+    return request(initialState.serverAddress + `/account_activation/${code}`);
+  }
+);
+
+export const fetchIsUserNameExist = createAsyncThunk(
+  "movies/fetchIsUserNameExist",
+  (userName) => {
+    const { request } = useHttp();
+    return request(
+      initialState.serverAddress + `/is_user_exist_with_name/${userName}`
+    );
+  }
+);
+
 export const fetchJwtToken = createAsyncThunk(
   "movies/fetchJwtToken",
   (user) => {
     const { request } = useHttp();
     return request(
       initialState.serverAddress + "/auth",
+      "POST",
+      JSON.stringify(user)
+    );
+  }
+);
+
+export const fetchRegistration = createAsyncThunk(
+  "movies/fetchRegistration",
+  (user) => {
+    const { request } = useHttp();
+    return request(
+      initialState.serverAddress + "/registration",
       "POST",
       JSON.stringify(user)
     );
@@ -219,10 +254,42 @@ const moviesSlice = createSlice({
       .addCase(fetchFavoriteMovies.fulfilled, (state, action) => {
         state.loadingStatus = "idle";
         state.favoritesMovies = action.payload;
-        console.log(action.payload);
       })
       .addCase(fetchFavoriteMovies.rejected, (state) => {
         state.loadingStatus = "error";
+      })
+      .addCase(fetchRegistration.pending, (state) => {
+        state.loadingUserDataStatus = "loading";
+      })
+      .addCase(fetchRegistration.fulfilled, (state, action) => {
+        state.loadingUserDataStatus = "idle";
+        state.user = action.payload;
+
+        console.log(state.loadingUserDataStatus);
+      })
+      .addCase(fetchRegistration.rejected, (state) => {
+        state.loadingUserDataStatus = "error";
+      })
+      .addCase(fetchIsUserNameExist.pending, (state) => {
+        state.isUserNameExistStatusLoading = "loading";
+      })
+      .addCase(fetchIsUserNameExist.fulfilled, (state, action) => {
+        state.isUserNameExistStatusLoading = "idle";
+        state.isUserNameExist = action.payload;
+
+        console.log(state.loadingUserDataStatus);
+      })
+      .addCase(fetchIsUserNameExist.rejected, (state) => {
+        state.isUserNameExistStatusLoading = "error";
+      })
+      .addCase(fetchConfirmEmail.pending, (state) => {
+        state.activationAccountStatusLoading = "loading";
+      })
+      .addCase(fetchConfirmEmail.fulfilled, (state, action) => {
+        state.activationAccountStatusLoading = "done";
+      })
+      .addCase(fetchConfirmEmail.rejected, (state) => {
+        state.activationAccountStatusLoading = "error";
       })
 
       // .addCase(fetchUpcommingMovies.pending, (state) => {
