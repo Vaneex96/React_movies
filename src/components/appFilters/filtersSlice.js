@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { useHttp } from "../../hooks/http.hook";
 
 const initialState = {
+  serverAddress: "http://localhost:8080",
   sort: "",
   whereToWatch: [],
   genres: [],
@@ -10,11 +11,13 @@ const initialState = {
   languagesLoadingStatus: "idle",
   languages: [],
   searchByName: "",
+  filtrationGenres: [],
+  sortingType: "",
 };
 
 export const fetchGenres = createAsyncThunk("filters/fetchGenres", () => {
   const { request } = useHttp();
-  return request("https://api.themoviedb.org/3/genre/movie/list?language=en");
+  return request(initialState.serverAddress + "/movies/all_genres");
 });
 
 export const fetchLanguages = createAsyncThunk("filters/fetchLanguages", () => {
@@ -29,6 +32,12 @@ const filtersSlice = createSlice({
     setSearchByName: (state, action) => {
       state.searchByName = action.payload;
     },
+    filtersAddFiltrationGenres: (state, action) => {
+      state.filtrationGenres = action.payload;
+    },
+    filtersAddSortingType: (state, action) => {
+      state.sortingType = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -37,10 +46,10 @@ const filtersSlice = createSlice({
       })
       .addCase(fetchGenres.fulfilled, (state, action) => {
         state.genresLoadingStatus = "idle";
-        state.genres = action.payload.genres;
-        action.payload.genres.forEach((item) => {
-          state.objectOfGenres[item.id] = item.name;
-        });
+        state.genres = action.payload;
+        // action.payload.genres.forEach((item) => {
+        //   state.objectOfGenres[item.id] = item.name;
+        // });
       })
       .addCase(fetchGenres.rejected, (state) => {
         state.genresLoadingStatus = "error";
@@ -65,4 +74,8 @@ const { reducer, actions } = filtersSlice;
 
 export default reducer;
 
-export const { setSearchByName } = actions;
+export const {
+  setSearchByName,
+  filtersAddFiltrationGenres,
+  filtersAddSortingType,
+} = actions;

@@ -7,16 +7,23 @@ import { fetchJwtToken } from "../appSearchedItemsByName/moviesSlice";
 const AppLogin = () => {
   const dispatch = useDispatch();
   const jwtToken = useSelector((state) => state.movies.jwtToken);
+  const jwtLoadingStatus = useSelector(
+    (state) => state.movies.jwtLoadingStatus
+  );
 
-  useEffect(() => {
-    console.log(jwtToken);
-  }, [jwtToken]);
+  useEffect(() => {}, [jwtToken]);
 
   return (
     <div className="container">
       <section className="login">
         <div className="login__header">
           <h2>Sign in</h2>
+          <p
+            className="login__error"
+            style={{ display: jwtLoadingStatus === "error" ? "block" : "none" }}
+          >
+            Incorrect login or password!
+          </p>
         </div>
         <div className="login__form">
           <Formik
@@ -30,8 +37,8 @@ const AppLogin = () => {
                 password: values.password,
               };
               dispatch(fetchJwtToken(user));
-              values.login = "";
-              values.password = "";
+              // values.login = "";
+              // values.password = "";
             }}
           >
             <Form className="form">

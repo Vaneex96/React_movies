@@ -14,6 +14,7 @@ import AppUserPageTemplate from "../appUserPageTemplate/AppUserPageTemplate";
 import "./App.scss";
 import AppRegistration from "../appRegistration/AppRegistration";
 import AppRegistrationConfirmed from "../appRegistrationConfirmed/AppRegistrationConfirmed";
+import AppMoviePage from "../appMoviePage/AppMoviePage";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
                 </>
               }
             />
+            <Route path="/movie/:id" element={<AppMoviePage />} />
             <Route
               path="/account_activation/:code"
               element={<AppRegistrationConfirmed />}

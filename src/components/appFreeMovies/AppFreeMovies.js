@@ -1,8 +1,29 @@
-import play from "../../resources/icons8-play-50.png";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchFreeToWatchMovies } from "../appSearchedItemsByName/moviesSlice";
+
+import AppMovieTemplate from "../appMovieTemplate/AppMovieTemplate";
 
 import "./AppFreeMovies.scss";
 
 const AppFreeMovies = () => {
+  const dispatch = useDispatch();
+
+  const freeToWatchMovies = useSelector(
+    (state) => state.movies.freeToWatchMovies
+  );
+
+  useEffect(() => {
+    dispatch(fetchFreeToWatchMovies({ pageNumber: 12 }));
+  }, []);
+
+  const renderMovies = (arr) => {
+    const movies = arr.map((item) => {
+      return <AppMovieTemplate item={item} key={item.id} />;
+    });
+    return movies;
+  };
+
   return (
     <section className="free_movies">
       <div className="container">
@@ -13,127 +34,7 @@ const AppFreeMovies = () => {
             <button className="btn">TV</button>
           </div>
         </div>
-        <div className="movies-list">
-          <div className="movie">
-            <a href="#">
-              <img
-                src="https://www.themoviedb.org/t/p/w220_and_h330_face/NNxYkU70HPurnNCSiCjYAmacwm.jpg"
-                alt="movie"
-                className="movie__img"
-              />
-              <span className="movie__mask">
-                <img src={play} alt="" />
-              </span>
-            </a>
-            <div className="movie__name">Avengers. Age of Ultron</div>
-            <div className="movie__genres">2014, USA, Adventure, Fantasy</div>
-          </div>
-
-          <div className="movie">
-            <a href="#">
-              <img
-                src="https://image.tmdb.org/t/p/w300_and_h450_face/4ssDuvEDkSArWEdyBl2X5EHvYKU.jpg"
-                alt="movie"
-                className="movie__img"
-              />
-              <span className="movie__mask">
-                <img src={play} alt="" />
-              </span>
-            </a>
-            <div className="movie__name">Avengers. Age of Ultron</div>
-            <div className="movie__genres">2014, USA, Adventure, Fantasy</div>
-          </div>
-
-          <div className="movie">
-            <a href="#">
-              <img
-                src="https://www.themoviedb.org/t/p/w220_and_h330_face/NNxYkU70HPurnNCSiCjYAmacwm.jpg"
-                alt="movie"
-                className="movie__img"
-              />
-              <span className="movie__mask">
-                <img src={play} alt="" />
-              </span>
-            </a>
-            <div className="movie__name">Avengers. Age of Ultron</div>
-            <div className="movie__genres">2014, USA, Adventure, Fantasy</div>
-          </div>
-
-          <div className="movie">
-            <a href="#">
-              <img
-                src="https://image.tmdb.org/t/p/w300_and_h450_face/4ssDuvEDkSArWEdyBl2X5EHvYKU.jpg"
-                alt="movie"
-                className="movie__img"
-              />
-              <span className="movie__mask">
-                <img src={play} alt="" />
-              </span>
-            </a>
-            <div className="movie__name">Avengers. Age of Ultron</div>
-            <div className="movie__genres">2014, USA, Adventure, Fantasy</div>
-          </div>
-
-          <div className="movie">
-            <a href="#">
-              <img
-                src="https://www.themoviedb.org/t/p/w220_and_h330_face/NNxYkU70HPurnNCSiCjYAmacwm.jpg"
-                alt="movie"
-                className="movie__img"
-              />
-              <span className="movie__mask">
-                <img src={play} alt="" />
-              </span>
-            </a>
-            <div className="movie__name">Avengers. Age of Ultron</div>
-            <div className="movie__genres">2014, USA, Adventure, Fantasy</div>
-          </div>
-
-          <div className="movie">
-            <a href="#">
-              <img
-                src="https://image.tmdb.org/t/p/w300_and_h450_face/4ssDuvEDkSArWEdyBl2X5EHvYKU.jpg"
-                alt="movie"
-                className="movie__img"
-              />
-              <span className="movie__mask">
-                <img src={play} alt="" />
-              </span>
-            </a>
-            <div className="movie__name">Avengers. Age of Ultron</div>
-            <div className="movie__genres">2014, USA, Adventure, Fantasy</div>
-          </div>
-
-          <div className="movie">
-            <a href="#">
-              <img
-                src="https://www.themoviedb.org/t/p/w220_and_h330_face/NNxYkU70HPurnNCSiCjYAmacwm.jpg"
-                alt="movie"
-                className="movie__img"
-              />
-              <span className="movie__mask">
-                <img src={play} alt="" />
-              </span>
-            </a>
-            <div className="movie__name">Avengers. Age of Ultron</div>
-            <div className="movie__genres">2014, USA, Adventure, Fantasy</div>
-          </div>
-
-          <div className="movie">
-            <a href="#">
-              <img
-                src="https://image.tmdb.org/t/p/w300_and_h450_face/4ssDuvEDkSArWEdyBl2X5EHvYKU.jpg"
-                alt="movie"
-                className="movie__img"
-              />
-              <span className="movie__mask">
-                <img src={play} alt="" />
-              </span>
-            </a>
-            <div className="movie__name">Avengers. Age of Ultron</div>
-            <div className="movie__genres">2014, USA, Adventure, Fantasy</div>
-          </div>
-        </div>
+        <div className="movies-list">{renderMovies(freeToWatchMovies)}</div>
       </div>
     </section>
   );

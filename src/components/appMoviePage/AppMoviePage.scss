@@ -1,0 +1,226 @@
+.movie_page {
+  margin-top: 30px;
+  text-align: center;
+  // display: flex;
+  // justify-content: center;
+  width: 1920px;
+  // min-height: 1000px;
+  min-height: 530px;
+  .backdrop {
+    width: 1920px;
+    height: 500px;
+
+    display: flex;
+    justify-content: end;
+
+    .mask {
+      //   display: flex;
+      //   justify-content: center;
+      //   align-items: center;
+      //   flex-direction: column;
+      width: 1920px;
+      height: 500px;
+      background-image: linear-gradient(
+        to right,
+        rgb(131, 36, 20) calc((50vw - 170px) - 340px),
+        rgba(131, 36, 20, 0.7) 50%,
+        rgba(131, 36, 20, 0.7) 100%
+      );
+
+      .container {
+        display: flex;
+        justify-content: space-between;
+
+        .poster {
+          margin-top: 25px;
+          img {
+            width: 300px;
+            height: auto;
+            border-radius: 10px;
+          }
+        }
+
+        .descr {
+          margin-top: 70px;
+          margin-left: 40px;
+          display: flex;
+          flex-direction: column;
+          align-items: start;
+          color: white;
+
+          .nav_bar {
+            width: 350px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+
+            a {
+              color: white;
+            }
+
+            .movie_btn {
+              margin-right: 9px;
+              box-sizing: border-box;
+              background: #032541;
+              border-radius: 50%;
+              border-width: 0;
+              width: 46px;
+              height: 46px;
+
+              cursor: pointer;
+
+              .like {
+                background-image: url("../../resources/movie_nav_bar/icons8-heart-64.png");
+                position: relative;
+                top: 8px;
+                left: 0;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 26px;
+                height: 26px;
+                line-height: inherit;
+                background-position: center center;
+                background-repeat: no-repeat;
+                color: white;
+                box-sizing: border-box;
+
+                background-color: #032541;
+              }
+
+              .favorite {
+                background-image: url("../../resources/movie_nav_bar/icons8-favorite-25.png");
+                position: relative;
+                top: 8px;
+                left: 0;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 26px;
+                height: 26px;
+                line-height: inherit;
+                background-position: center center;
+                background-repeat: no-repeat;
+                color: white;
+                box-sizing: border-box;
+
+                background-color: #032541;
+              }
+
+              .favorite-active {
+                background-image: url("../../resources/movie_nav_bar/icons8-favorite-26.png");
+                position: relative;
+                top: 8px;
+                left: 0;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 26px;
+                height: 26px;
+                line-height: inherit;
+                background-position: center center;
+                background-repeat: no-repeat;
+                color: white;
+                box-sizing: border-box;
+
+                background-color: #032541;
+              }
+
+              .watchlist {
+                background-image: url("../../resources/movie_nav_bar/icons8-list-25.png");
+                position: relative;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 40px;
+                height: 40px;
+                line-height: inherit;
+                background-position: center center;
+                background-repeat: no-repeat;
+                color: white;
+                box-sizing: border-box;
+              }
+
+              .bookmarks {
+                background-image: url("../../resources/movie_nav_bar/icons8-bookmark-25.png");
+                position: relative;
+                top: 8px;
+                left: 0;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 26px;
+                height: 26px;
+                line-height: inherit;
+                background-position: center center;
+                background-repeat: no-repeat;
+                color: white;
+                box-sizing: border-box;
+
+                background-color: #032541;
+              }
+            }
+
+            .play_btn {
+              // margin-left: 10px;
+              display: flex;
+              justify-content: space-around;
+              text-decoration: none;
+              cursor: pointer;
+            }
+
+            .play {
+              background-image: url("../../resources/movie_nav_bar/icons8-play-25.png");
+              position: relative;
+              // top: 8px;
+              // left: 0;
+              margin-right: 5px;
+              display: inline-flex;
+              align-items: center;
+              justify-content: center;
+              width: 26px;
+              height: 26px;
+              line-height: inherit;
+              background-position: center center;
+              background-repeat: no-repeat;
+              color: white;
+              box-sizing: border-box;
+            }
+          }
+
+          .overview {
+            span {
+              font-size: 25px;
+            }
+            margin-top: 10px;
+            text-align: left;
+          }
+        }
+      }
+    }
+  }
+
+  .youtube {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    top: 0;
+    left: 0;
+    position: fixed;
+    background-color: rgb(0, 0, 0, 0.7);
+    width: 1920px;
+    height: 1000px;
+  }
+
+  .movie-player {
+    min-height: 900px;
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+
+    // video {
+    //   width: 150%;
+    //   height: 150%;
+    // }
+  }
+}

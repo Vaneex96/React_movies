@@ -1,17 +1,8 @@
 import { useState } from "react";
-import { useDispatch, useSelector, useEffect } from "react-redux";
+import { useParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { setSearchByName } from "../appFilters/filtersSlice";
 import { setSwitcher } from "../appFiltersByName/filtersByNameSlice";
-
-import {
-  fetchMovies,
-  fetchTvShows,
-  fetchCollections,
-  fetchCompanies,
-  fetchKeywords,
-  fetchMulties,
-  fetchPersons,
-} from "../appFiltersByName/filtersByNameSlice";
 
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
@@ -26,11 +17,7 @@ const AppHeader = () => {
   const dispatch = useDispatch();
   const [searchValue, setSearchValue] = useState("");
 
-  // const Employee = useSelector(state => state.movies.objectOfEmployees);
-
-  // useEffect(() => {
-  //     dispatch()
-  // }, [])
+  const params = useParams();
 
   return (
     <div className="app_header">
@@ -162,9 +149,50 @@ const AppHeader = () => {
                   Search
                 </Button>
               </Form>
-              <div className="login">
+              <div
+                className="login"
+                style={{
+                  display: localStorage.getItem("jwt") ? "none" : "block",
+                  marginLeft: "10px",
+                }}
+              >
                 <a href="http://localhost:3000/login">Sing in</a>
-                <a href="http://localhost:3000/registration">Sing up</a>
+                <a
+                  href="http://localhost:3000/registration"
+                  style={{
+                    marginLeft: "10px",
+                  }}
+                >
+                  Sing up
+                </a>
+              </div>
+              <div
+                className="login"
+                style={{
+                  display: localStorage.getItem("jwt") ? "block" : "none",
+                  marginLeft: "10px",
+                }}
+              >
+                <a href="http://localhost:3000/login">
+                  <button
+                    className="logout"
+                    onClick={() => {
+                      localStorage.removeItem("jwt");
+                      localStorage.removeItem("id");
+                      localStorage.removeItem("username");
+                    }}
+                  >
+                    Log out
+                  </button>
+                </a>
+                <a
+                  href={`http://localhost:3000/user/${localStorage.getItem(
+                    "id"
+                  )}`}
+                  style={{ marginLeft: "10px" }}
+                >
+                  {localStorage.getItem("username")}
+                </a>
               </div>
             </Navbar.Collapse>
           </Container>

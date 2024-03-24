@@ -12,14 +12,18 @@ export const useHttp = () => {
       const response = await fetch(url, { method, body, headers });
 
       if (!response.ok) {
-        console.log(response);
+        console.log("response " + response.status);
+
+        if (response.status === 401) {
+          localStorage.removeItem("jwt");
+          localStorage.removeItem("id");
+          localStorage.removeItem("username");
+        }
 
         throw new Error(`Could not fetch ${url}, status ${response}`);
       }
 
       const data = await response.json();
-
-      console.log("Data" + data);
 
       return data;
     } catch (e) {

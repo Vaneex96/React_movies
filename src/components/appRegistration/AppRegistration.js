@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   fetchRegistration,
   fetchIsUserNameExist,
+  fetchCheckEmailExist,
 } from "../appSearchedItemsByName/moviesSlice";
 import * as Yup from "yup";
 import Spinner from "../Spinner/Spinner";
@@ -15,6 +16,7 @@ const AppRegistration = () => {
   let status = useSelector((state) => state.movies.loadingUserDataStatus);
   const user = useSelector((state) => state.movies.user);
   const userName = useSelector((state) => state.movies.isUserNameExist);
+  const isEmailInUsing = useSelector((state) => state.movies.isEmailInUsing);
   const [loginValue, setLoginValue] = useState("");
 
   const [login, setLogin] = useState("");
@@ -22,8 +24,8 @@ const AppRegistration = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [email, setEmail] = useState("");
 
-  const checkIsUserNameExist = (event) => {
-    dispatch(fetchIsUserNameExist(event.target.value));
+  const checkIsUserNameExist = (value) => {
+    dispatch(fetchIsUserNameExist(value));
   };
 
   useEffect(() => {}, [user, status]);
@@ -90,7 +92,158 @@ const AppRegistration = () => {
             <h2>Registartion</h2>
           </div>
           <div className="login__form">
-            <Formik
+            <form
+              className="form"
+              // initialValues={{
+              //   login: loginValue,
+              //   password: "",
+              //   confirmPassword: "",
+              //   email: "",
+              // }}
+              // validationSchema={Yup.object({
+              //   login: Yup.string()
+              //     .min(2, "Must be at least 2 letters")
+              //     .required("This field is required"),
+              //   password: Yup.string().required("This field is required"),
+              //   confirmPassword: Yup.string().required(
+              //     "This field is required"
+              //   ),
+              //   email: Yup.string().required("This field is required"),
+              // })}
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (
+                  !userName &&
+                  userName != null &&
+                  password === confirmPassword &&
+                  !isEmailInUsing &&
+                  isEmailInUsing != null
+                ) {
+                  dispatch(
+                    fetchRegistration({
+                      username: login,
+                      password: password,
+                      confirmPassword: confirmPassword,
+                      email: email,
+                    })
+                  );
+                }
+              }}
+            >
+              <input
+                // onBlur={(e) => {
+                //   checkIsUserNameExist(e);
+                // }}
+                onChange={(e) => {
+                  setLogin(e.target.value);
+                  checkIsUserNameExist(e.target.value);
+                }}
+                value={login}
+                name="login"
+                className="login__input"
+                placeholder="Enter your login"
+                type="text"
+                autoComplete="off"
+                style={{
+                  backgroundColor:
+                    userName !== null && !login
+                      ? "rgb(229 188 190)"
+                      : userName === null
+                      ? "white"
+                      : userName
+                      ? "rgb(229 188 190)"
+                      : "rgb(165 241 206)",
+                }}
+              />
+              {/* <h6
+                    style={{
+                      color: "red",
+                      display: !userName || toggle ? "none" : "block",
+                      marginLeft: "10px",
+                    }}
+                  >
+                    User with user name "{loginValue}" already exists
+                  </h6> */}
+              <input
+                onClick={(e) => {
+                  checkIsUserNameExist(login);
+                }}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                }}
+                value={password}
+                name="password"
+                className="login__input"
+                placeholder="Enter your password"
+                type="password"
+                style={{
+                  backgroundColor:
+                    !password && !confirmPassword
+                      ? "white"
+                      : confirmPassword !== password
+                      ? "rgb(229 188 190)"
+                      : "rgb(165 241 206)",
+                }}
+              />
+              <input
+                onChange={(e) => {
+                  setConfirmPassword(e.target.value);
+                }}
+                value={confirmPassword}
+                name="confirmPassword"
+                className="login__input"
+                placeholder="Confirm your password"
+                type="password"
+                style={{
+                  backgroundColor:
+                    !password && !confirmPassword
+                      ? "white"
+                      : confirmPassword !== password
+                      ? "rgb(229 188 190)"
+                      : "rgb(165 241 206)",
+                }}
+              />
+              {/* <ErrorMessage
+                    style={{ color: "red", marginLeft: "5px" }}
+                    className="error"
+                    name="confirmPassword"
+                    component="div"
+                  /> */}
+              <input
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  if (e.target.value.includes("@")) {
+                    dispatch(fetchCheckEmailExist(e.target.value));
+                  }
+                }}
+                value={email}
+                name="email"
+                className="login__input"
+                placeholder="Enter your email"
+                type="email"
+                autoComplete="off"
+                style={{
+                  backgroundColor:
+                    isEmailInUsing == null
+                      ? "white"
+                      : isEmailInUsing
+                      ? "rgb(229 188 190)"
+                      : "rgb(165 241 206)",
+                }}
+              />
+              <button type="submit">Sing up</button>
+            </form>
+          </div>
+        </section>
+      </div>
+    );
+  }
+};
+
+export default AppRegistration;
+
+{
+  /* <Formik
               initialValues={{
                 login: loginValue,
                 password: "",
@@ -150,39 +303,32 @@ const AppRegistration = () => {
                     }}
                   >
                     User with user name "{loginValue}" already exists
-                  </h6> */}
-                <Field
-                  name="password"
-                  className="login__input"
-                  placeholder="Enter your password"
-                  type="password"
-                />
-                <Field
-                  name="confirmPassword"
-                  className="login__input"
-                  placeholder="Confirm your password"
-                  type="password"
-                />
-                {/* <ErrorMessage
-                    style={{ color: "red", marginLeft: "5px" }}
-                    className="error"
-                    name="confirmPassword"
-                    component="div"
-                  /> */}
-                <Field
-                  name="email"
-                  className="login__input"
-                  placeholder="Enter your email"
-                  type="email"
-                />
-                <button type="submit">Sing up</button>
-              </Form>
-            </Formik>
-          </div>
-        </section>
-      </div>
-    );
-  }
-};
-
-export default AppRegistration;
+                  </h6> */
+}
+//     <Field
+//       name="password"
+//       className="login__input"
+//       placeholder="Enter your password"
+//       type="password"
+//     />
+//     <Field
+//       name="confirmPassword"
+//       className="login__input"
+//       placeholder="Confirm your password"
+//       type="password"
+//     />
+//     {/* <ErrorMessage
+//         style={{ color: "red", marginLeft: "5px" }}
+//         className="error"
+//         name="confirmPassword"
+//         component="div"
+//       /> */}
+//     <Field
+//       name="email"
+//       className="login__input"
+//       placeholder="Enter your email"
+//       type="email"
+//     />
+//     <button type="submit">Sing up</button>
+//   </Form>
+// </Formik> */}

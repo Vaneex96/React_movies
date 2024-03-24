@@ -1,7 +1,7 @@
 import { useParams, Link } from "react-router-dom";
-
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import classNames from "classnames";
 import {
   fetchPopularMovies,
   fetchMovieByName,
@@ -29,14 +29,21 @@ import {
 import AppMovieTemplate from "../appMovieTemplate/AppMovieTemplate";
 import Spinner from "../Spinner/Spinner";
 import "./AppSearchedItemsByName.scss";
-import play from "../../resources/icons8-play-50.png";
-import movie from "../../resources/icons8-picture.svg";
 
 const AppSearchedItemsByName = () => {
   const dispatch = useDispatch();
-  let popularMovies = useSelector(
-    (state) => state.movies.popularMovies.results
+  let popularMovies = useSelector((state) => state.movies.popularMovies);
+  let isSearchingByFilters = useSelector(
+    (state) => state.movies.isSearchingByFilters
   );
+
+  let filtrationGenres = useSelector((state) => state.filters.filtrationGenres);
+  let sortingType = useSelector((state) => state.filters.sortingType);
+
+  const pagination = useSelector((state) => state.movies.pagination);
+  const totalItems = useSelector((state) => state.movies.totalItems);
+  const clientAddress = useSelector((state) => state.movies.clientAddress);
+  const [activePage, setActivePage] = useState(1);
 
   const loadingStatus = useSelector((state) => state.movies.loadingStatus);
 
@@ -54,8 +61,6 @@ const AppSearchedItemsByName = () => {
   const keywords = useSelector((state) => state.filtersByName.keywords.results);
   const multies = useSelector((state) => state.filtersByName.multies.results);
 
-  // console.log(Employee);
-
   //////end///////Get items from filtersByName state
   const params = useParams();
 
@@ -65,28 +70,34 @@ const AppSearchedItemsByName = () => {
 
   const arrOfActions = [
     fetchMovieByName,
-    fetchMovies,
-    fetchTvShows,
-    fetchCollections,
-    fetchCompanies,
-    fetchKeywords,
-    fetchMulties,
-    fetchPersons,
+    // fetchMovies,
+    // fetchTvShows,
+    // fetchCollections,
+    // fetchCompanies,
+    // fetchKeywords,
+    // fetchMulties,
+    // fetchPersons,
   ];
-
-  console.log("render");
 
   useEffect(() => {
     switch (params.id) {
       case "search":
         dispatch(setActiveFilter("movies"));
-        arrOfActions.forEach((action) =>
-          dispatch(action(localStorageSearchByName))
-        );
+        arrOfActions.forEach((action) => {
+          if (action === fetchMovieByName) {
+            dispatch(
+              action({ title: localStorageSearchByName, paginateBy: 4 })
+            );
+            return;
+          }
+          dispatch(action(localStorageSearchByName));
+        });
         break;
 
       case "popular":
-        dispatch(fetchPopularMovies("popular"));
+        if (popularMovies.length !== 0) {
+          dispatch(fetchPopularMovies({ pageNumber: 1, pagination: 12 }));
+        }
         break;
 
       case "now_playing":
@@ -109,20 +120,60 @@ const AppSearchedItemsByName = () => {
     }
   }, [searchByName]);
 
-  if (loadingStatus === "loading") {
-    return (
-      <div
-        style={{
-          width: "896px",
-          display: "flex",
-          justifyContent: "center",
-          padding: "200px 0 0 0px",
-        }}
-      >
-        <Spinner />
-      </div>
-    );
-  } else if (loadingStatus === "error") {
+  const renderPaginationBar = (movies) => {
+    const totalPages = Math.ceil(movies.total_pages / pagination);
+    const pages = [];
+
+    for (let i = 1; i <= totalPages; i++) {
+      const btnClass = classNames("page", {
+        active: i === activePage,
+      });
+      pages.push(
+        <li className={btnClass} key={i}>
+          <div
+            className="href"
+            onClick={(e) => {
+              if (isSearchingByFilters) {
+                dispatch(
+                  fetchPopularMoviesByFilters({
+                    page: i,
+                    genres: filtrationGenres,
+                    sortingType: sortingType,
+                  })
+                );
+              }
+
+              if (!isSearchingByFilters) {
+                dispatch(fetchPopularMovies({ pageNumber: i, pagination: 12 }));
+              }
+              setActivePage(i);
+            }}
+          >
+            {i}
+          </div>
+        </li>
+      );
+    }
+
+    return pages;
+  };
+
+  // if (loadingStatus === "loading") {
+  //   return (
+  //     <div
+  //       style={{
+  //         width: "896px",
+  //         display: "flex",
+  //         justifyContent: "center",
+  //         padding: "200px 0 0 0px",
+  //       }}
+  //     >
+  //       <Spinner />
+  //     </div>
+  //   );
+  // }
+
+  if (loadingStatus === "error") {
     return (
       <div
         style={{
@@ -184,7 +235,7 @@ const AppSearchedItemsByName = () => {
 
   const movies = (arr) => {
     const movies = arr.map((item) => {
-      return <AppMovieTemplate item={item} addClass={"modify"} />;
+      return <AppMovieTemplate item={item} addClass={"modify"} key={item.id} />;
     });
 
     return movies;
@@ -192,7 +243,12 @@ const AppSearchedItemsByName = () => {
 
   return (
     <section className="app-searched-items">
-      <div className="items">{movies(popularMovies)}</div>
+      <div className="items">{movies(popularMovies.movie_list)}</div>
+      <div className="pagination-bar">
+        <ul className="pagination-bar__pages">
+          {renderPaginationBar(popularMovies)}
+        </ul>
+      </div>
     </section>
   );
 };

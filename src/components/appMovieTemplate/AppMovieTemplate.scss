@@ -39,11 +39,21 @@
     }
   }
   &__name {
+    display: flex;
+    justify-content: space-between;
     // line-height: 0;
-    font-size: 17px;
-    font-weight: 700;
+    flex-wrap: wrap;
+    padding: 0 5px 0 3px;
+
+    p {
+      margin-bottom: 0;
+      width: 150px;
+      font-size: 17px;
+      font-weight: 700;
+    }
   }
   &__genres {
+    padding: 0 5px 0 3px;
     font-size: 13px;
     color: #b7b7b7;
   }
@@ -55,4 +65,30 @@
   margin-top: 110px;
   margin-left: 50px;
   // backgroundColor: "#dbdbdb",
+}
+
+.movie__icon_youtube {
+  position: absolute;
+  right: 5px;
+  top: 4px;
+}
+
+.movie__icon {
+  position: absolute;
+  right: 33px;
+  top: 5px;
+}
+
+.favorite__add {
+  background-image: url("../../resources/movie_nav_bar/icons8-star-26.png");
+  width: 26px;
+  height: 26px;
+  cursor: pointer;
+}
+
+.favorite__remove {
+  background-image: url("../../resources/movie_nav_bar/icons8-favorite-26.png");
+  width: 26px;
+  height: 26px;
+  cursor: pointer;
 }

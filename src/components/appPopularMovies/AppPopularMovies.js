@@ -1,28 +1,24 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPopularMovies } from "../appSearchedItemsByName/moviesSlice";
-import { fetchGenres } from "../appFilters/filtersSlice";
 
 import AppMovieTemplate from "../appMovieTemplate/AppMovieTemplate";
-import play from "../../resources/icons8-play-50.png";
-import movie from "../../resources/icons8-picture.svg";
+
 import "./AppPopularMovies.scss";
 
 const AppPopularMovies = () => {
   const dispatch = useDispatch();
-  const objectOfGenres = useSelector((state) => state.filters.objectOfGenres);
   const popularMovies = useSelector(
-    (state) => state.movies.popularMovies.results
+    (state) => state.movies.popularMovies.movie_list
   );
 
   useEffect(() => {
-    dispatch(fetchGenres());
-    dispatch(fetchPopularMovies());
+    dispatch(fetchPopularMovies({ pageNumber: 1 }));
   }, []);
 
   const renderMovies = (arr) => {
     const movies = arr.map((item) => {
-      return <AppMovieTemplate item={item} />;
+      return <AppMovieTemplate item={item} key={item.id} />;
     });
     return movies;
   };

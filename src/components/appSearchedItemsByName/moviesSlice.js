@@ -1,47 +1,112 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { useHttp } from "../../hooks/http.hook";
-import { useHttps } from "../../hooks/http.hook copy";
 
 const initialState = {
   serverAddress: "http://localhost:8080",
   clientAddress: "http://localhost:3000",
+  jwtLoadingStatus: "idle",
+  isMovieInFavorite: null,
+  movieAddingStatus: "idle",
+  movieByIdLoadingStatus: "idle",
+  movieById: {},
+  isEmailInUsing: null,
+  isEmailInUsingStatusLoading: "idle",
   activationAccountStatusLoading: "idle",
-  isUserNameExist: false,
+  isUserNameExist: null,
   isUserNameExistStatusLoading: "idle",
   loadingUserDataStatus: "idle",
   favoritesMovies: [],
   jwtToken: "",
   user: null,
-  popularMovies: {
-    results: [],
-  },
+  isSearchingByFilters: false,
+  popularMovies: { movie_list: [], total_pages: 0 },
+  freeToWatchMovies: [],
+  filtrationGenres: [],
+  pagination: 12,
+  totalItems: null,
   loadingStatus: "idle",
   genreMatch: {},
   // movieByNameLoadingStatus: "idle",
   imagesOfMovie: [],
-  objectOfFilters: {
-    12: "Adventure",
-    14: "Fantasy",
-    16: "Animation",
-    18: "Drama",
-    27: "Horror",
-    28: "Action",
-    35: "Comedy",
-    36: "History",
-    37: "Western",
-    53: "Thriller",
-    80: "Crime",
-    99: "Documentary",
-    878: "Science Fiction",
-    9648: "Mystery",
-    10402: "Music",
-    10749: "Romance",
-    10751: "Family",
-    10752: "War",
-    10770: "TV Movie",
-  },
   objectOfEmployees: {},
 };
+
+// export const addFiltrationGenres = createAsyncThunk(
+//   "movies/fetchMovieById",
+//   (genresArr) => {
+//     initialState.filtrationGenres = genresArr;
+//   }
+// );
+
+// export const fetchCheckMovieInFavorite = createAsyncThunk(
+//   "movies/fetchCheckMovieInFavorite",
+//   ({ userId, movieId }) => {
+//     const { request } = useHttp();
+//     return request(
+//       initialState.serverAddress +
+//         `/id/${userId}/check_movie_in_favorite/movie_id/${movieId}`,
+//       "GET",
+//       null,
+//       {
+//         "Content-Type": "application/json",
+//         accept: "application/json",
+//         Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+//       }
+//     );
+//   }
+// );
+
+export const fetchCheckMovieInFavorite = createAsyncThunk(
+  "movies/fetchCheckMovieInFavorite",
+  ({ userId, movieId }) => {
+    const { request } = useHttp();
+    return request(
+      initialState.serverAddress +
+        `/id/${userId}/check_movie_in_favorite/movie_id/${movieId}`,
+      "GET",
+      null,
+      {
+        "Content-Type": "application/json",
+        accept: "application/json",
+        Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+      }
+    );
+  }
+);
+
+export const fetchAddMovieToFavorite = createAsyncThunk(
+  "movies/fetchAddMovieToFavorite",
+  ({ userId, movieId }) => {
+    const { request } = useHttp();
+    return request(
+      initialState.serverAddress +
+        `/id/${userId}/add_movie_to_favorite/movie_id/${movieId}`,
+      "POST",
+      null,
+      {
+        "Content-Type": "application/json",
+        accept: "application/json",
+        Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+      }
+    );
+  }
+);
+
+export const fetchMovieById = createAsyncThunk(
+  "movies/fetchMovieById",
+  (id) => {
+    const { request } = useHttp();
+    return request(initialState.serverAddress + `/movies/movie/id/${id}`);
+  }
+);
+
+export const fetchCheckEmailExist = createAsyncThunk(
+  "movies/fetchCheckEmailExist",
+  (email) => {
+    const { request } = useHttp();
+    return request(initialState.serverAddress + `/is_email_in_use/${email}`);
+  }
+);
 
 export const fetchConfirmEmail = createAsyncThunk(
   "movies/fetchConfirmEmail",
@@ -89,7 +154,6 @@ export const fetchFavoriteMovies = createAsyncThunk(
   "movies/fetchFavoriteMovies",
   (id) => {
     const { request } = useHttp();
-    console.log(`Bearer ${localStorage.getItem(id)}`);
     return request(
       `${initialState.serverAddress}/id/${id}/favorites_movies`,
       "GET",
@@ -97,7 +161,7 @@ export const fetchFavoriteMovies = createAsyncThunk(
       {
         "Content-Type": "application/json",
         accept: "application/json",
-        Authorization: `Bearer ${localStorage.getItem(id)}`,
+        Authorization: `Bearer ${localStorage.getItem("jwt")}`,
       }
     );
   }
@@ -106,10 +170,20 @@ export const fetchFavoriteMovies = createAsyncThunk(
 ///////////////////////////////////////////////////////////////////////////////////////////////
 export const fetchPopularMovies = createAsyncThunk(
   "movies/fetchPopularMovies",
-  (movieList) => {
+  ({ pageNumber }) => {
     const { request } = useHttp();
     return request(
-      `https://api.themoviedb.org/3/movie/${movieList}?language=en-US&page=1`
+      `${initialState.serverAddress}/movies/popular_movies/page/${pageNumber}/pagination/${initialState.pagination}`
+    );
+  }
+);
+
+export const fetchFreeToWatchMovies = createAsyncThunk(
+  "movies/fetchFreeToWatchMovies",
+  ({ pageNumber }) => {
+    const { request } = useHttp();
+    return request(
+      `${initialState.serverAddress}/movies/popular_movies/page/${pageNumber}/pagination/${initialState.pagination}`
     );
   }
 );
@@ -146,20 +220,34 @@ export const fetchPopularMovies = createAsyncThunk(
 
 export const fetchPopularMoviesByFilters = createAsyncThunk(
   "movies/fetchPopularMoviesByFilters",
-  ({ lang, genres, sortBy }) => {
+  ({ genres, page, sortingType }) => {
     const { request } = useHttp();
+
+    // initialState.filtrationGenres = genres;
+
     return request(
-      `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=${lang}&page=1&sort_by=${sortBy}&with_genres=${genres}`
+      initialState.serverAddress + `/movies/by_genres_ids/page/${page}`,
+      "POST",
+      JSON.stringify({ genresIds: genres, sortingType: sortingType })
     );
+    // return request(
+    //   `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=${lang}&page=1&sort_by=${sortBy}&with_genres=${genres}`
+    // );
   }
 );
 
 export const fetchMovieByName = createAsyncThunk(
   "movies/fetchMovieByName",
-  (name) => {
+  ({ title, page, paginateBy }) => {
+    if (!page) page = 1;
+    if (!paginateBy) paginateBy = 12;
+
+    console.log("page: " + page + " ,paginateBy: " + paginateBy);
+
     const { request } = useHttp();
     return request(
-      `https://api.themoviedb.org/3/search/movie?query=${name}&include_adult=false&language=en-US&page=1`
+      initialState.serverAddress +
+        `/movies/search_by_title/${title}/page/${page}/paginate_by/${paginateBy}/sort_by/popularity_desc`
     );
   }
 );
@@ -175,7 +263,7 @@ export const fetchImagesMovieById = createAsyncThunk(
 const moviesSlice = createSlice({
   name: "movies",
   initialState,
-  redusers: {},
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchPopularMovies.pending, (state) => {
@@ -184,16 +272,7 @@ const moviesSlice = createSlice({
       .addCase(fetchPopularMovies.fulfilled, (state, action) => {
         state.loadingStatus = "idle";
         state.popularMovies = action.payload;
-
-        state.popularMovies.results.forEach((item) => {
-          if (item.genre_ids) {
-            item.genre_ids = item.genre_ids.map(
-              (item) => state.objectOfFilters[item]
-            );
-          } else {
-            return item;
-          }
-        });
+        state.totalPages = action.payload.total_pages;
       })
       .addCase(fetchPopularMovies.rejected, (state) => {
         state.loadingStatus = "error";
@@ -204,11 +283,11 @@ const moviesSlice = createSlice({
       .addCase(fetchMovieByName.fulfilled, (state, action) => {
         state.loadingStatus = "idle";
         state.popularMovies = action.payload;
-        state.popularMovies.results.forEach((item) => {
-          item.genre_ids = item.genre_ids.map(
-            (item) => state.objectOfFilters[item]
-          );
-        });
+        // state.popularMovies.results.forEach((item) => {
+        //   item.genre_ids = item.genre_ids.map(
+        //     (item) => state.objectOfFilters[item]
+        //   );
+        // });
       })
       .addCase(fetchMovieByName.rejected, (state) => {
         state.loadingStatus = "error";
@@ -220,17 +299,18 @@ const moviesSlice = createSlice({
       .addCase(fetchPopularMoviesByFilters.fulfilled, (state, action) => {
         state.loadingStatus = "idle";
         state.popularMovies = action.payload;
-        state.popularMovies.results.forEach((item) => {
-          item.genre_ids = item.genre_ids.map(
-            (item) => state.objectOfFilters[item]
-          );
-        });
+        state.isSearchingByFilters = true;
+
+        // state.popularMovies.results.forEach((item) => {
+        //   item.genre_ids = item.genre_ids.map(
+        //     (item) => state.objectOfFilters[item]
+        //   );
+        // });
       })
       .addCase(fetchPopularMoviesByFilters.rejected, (state) => {
         state.loadingStatus = "error";
       })
       .addCase(fetchImagesMovieById.fulfilled, (state, action) => {
-        console.log(action.payload);
         state.imagesOfMovie.push(action.payload.posters[0]);
       })
       .addCase(fetchJwtToken.pending, (state) => {
@@ -239,14 +319,16 @@ const moviesSlice = createSlice({
       .addCase(fetchJwtToken.fulfilled, (state, action) => {
         state.loadingStatus = "idle";
         state.jwtToken = action.payload.token;
-        localStorage.setItem(action.payload.id, action.payload.token);
+        localStorage.setItem("jwt", action.payload.token);
+        localStorage.setItem("username", action.payload.userName);
+        localStorage.setItem("id", action.payload.id);
 
         if (state.jwtToken !== "") {
           window.location.href = `${initialState.clientAddress}/user/${action.payload.id}`;
         }
       })
       .addCase(fetchJwtToken.rejected, (state) => {
-        state.loadingStatus = "error";
+        state.jwtLoadingStatus = "error";
       })
       .addCase(fetchFavoriteMovies.pending, (state) => {
         state.loadingStatus = "loading";
@@ -264,8 +346,6 @@ const moviesSlice = createSlice({
       .addCase(fetchRegistration.fulfilled, (state, action) => {
         state.loadingUserDataStatus = "idle";
         state.user = action.payload;
-
-        console.log(state.loadingUserDataStatus);
       })
       .addCase(fetchRegistration.rejected, (state) => {
         state.loadingUserDataStatus = "error";
@@ -276,8 +356,6 @@ const moviesSlice = createSlice({
       .addCase(fetchIsUserNameExist.fulfilled, (state, action) => {
         state.isUserNameExistStatusLoading = "idle";
         state.isUserNameExist = action.payload;
-
-        console.log(state.loadingUserDataStatus);
       })
       .addCase(fetchIsUserNameExist.rejected, (state) => {
         state.isUserNameExistStatusLoading = "error";
@@ -290,6 +368,55 @@ const moviesSlice = createSlice({
       })
       .addCase(fetchConfirmEmail.rejected, (state) => {
         state.activationAccountStatusLoading = "error";
+      })
+      .addCase(fetchCheckEmailExist.pending, (state) => {
+        state.isEmailInUsingStatusLoading = "loading";
+      })
+      .addCase(fetchCheckEmailExist.fulfilled, (state, action) => {
+        state.isEmailInUsing = false;
+        state.isEmailInUsingStatusLoading = "idle";
+      })
+      .addCase(fetchCheckEmailExist.rejected, (state, action) => {
+        state.isEmailInUsing = true;
+        state.isEmailInUsingStatusLoading = "error";
+      })
+      .addCase(fetchMovieById.pending, (state) => {
+        state.movieByIdLoadingStatus = "loading";
+      })
+      .addCase(fetchMovieById.fulfilled, (state, action) => {
+        state.movieById = action.payload;
+        state.movieByIdLoadingStatus = "idle";
+      })
+      .addCase(fetchMovieById.rejected, (state) => {
+        state.movieByIdLoadingStatus = "error";
+      })
+      .addCase(fetchFreeToWatchMovies.pending, (state) => {
+        // state.movieByIdLoadingStatus = "loading";
+      })
+      .addCase(fetchFreeToWatchMovies.fulfilled, (state, action) => {
+        state.freeToWatchMovies = action.payload.movie_list;
+        // state.movieByIdLoadingStatus = "idle";
+      })
+      .addCase(fetchFreeToWatchMovies.rejected, (state, action) => {
+        // state.movieByIdLoadingStatus = "error";
+      })
+      .addCase(fetchAddMovieToFavorite.pending, (state) => {
+        state.movieAddingStatus = "loading";
+      })
+      .addCase(fetchAddMovieToFavorite.fulfilled, (state, action) => {
+        state.movieAddingStatus = "idle";
+      })
+      .addCase(fetchAddMovieToFavorite.rejected, (state, action) => {
+        state.movieAddingStatus = "error";
+      })
+      .addCase(fetchCheckMovieInFavorite.pending, (state) => {
+        // state.movieAddingStatus = "loading";
+      })
+      .addCase(fetchCheckMovieInFavorite.fulfilled, (state, action) => {
+        state.isMovieInFavorite = action.payload;
+      })
+      .addCase(fetchCheckMovieInFavorite.rejected, (state, action) => {
+        // state.movieAddingStatus = "error";
       })
 
       // .addCase(fetchUpcommingMovies.pending, (state) => {
@@ -318,6 +445,6 @@ const moviesSlice = createSlice({
 
 const { reducer, actions } = moviesSlice;
 
-// export const { setPopularMovies } = actions;
+export const { setPopularMovies } = actions;
 
 export default reducer;

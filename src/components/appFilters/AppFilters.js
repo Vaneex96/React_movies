@@ -1,6 +1,10 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchGenres, fetchLanguages } from "./filtersSlice";
+import {
+  filtersAddFiltrationGenres,
+  filtersAddSortingType,
+} from "../appFilters/filtersSlice";
 import { fetchPopularMoviesByFilters } from "../appSearchedItemsByName/moviesSlice";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
@@ -17,7 +21,7 @@ const AppFilters = () => {
 
   useEffect(() => {
     dispatch(fetchGenres());
-    dispatch(fetchLanguages());
+    // dispatch(fetchLanguages());
   }, []);
 
   const onHandleClickSort = () => {
@@ -30,9 +34,9 @@ const AppFilters = () => {
   const renderGenres = (arr) => {
     const genres = arr.map((item) => {
       return (
-        <label className="checkbox-btn" key={item.id}>
-          <Field type="checkbox" name={item.id} key={item.id} />
-          <span>{item.name}</span>
+        <label className="checkbox-btn" key={item[0]}>
+          <Field type="checkbox" name={item[0]} key={item[0]} />
+          <span>{item[1]}</span>
         </label>
       );
     });
@@ -56,11 +60,11 @@ const AppFilters = () => {
     <section className="app-filters">
       <Formik
         initialValues={{
-          sort_select: "popularity.desc",
+          sort_select: "popularity_desc",
           language: "en",
         }}
         onSubmit={(values) => {
-          let stringOfGenres = "";
+          let genresArr = [];
 
           for (const k in values) {
             if (
@@ -68,17 +72,23 @@ const AppFilters = () => {
               values[k] !== values.sort_select &&
               values[k] !== values.language
             ) {
-              stringOfGenres += k + "%2C%20";
+              genresArr.push(+k);
+
+              // stringOfGenres += k + "%2C%20";
             }
           }
 
           dispatch(
             fetchPopularMoviesByFilters({
               lang: values.language,
-              genres: stringOfGenres,
-              sortBy: values.sort_select,
+              genres: genresArr,
+              sortingType: values.sort_select,
+              page: 1,
             })
           );
+
+          dispatch(filtersAddFiltrationGenres(genresArr));
+          dispatch(filtersAddSortingType(values.sort_select));
         }}
       >
         <Form>
@@ -106,18 +116,14 @@ const AppFilters = () => {
               className="sort_select"
               as="select"
             >
-              <option value="popularity.desc">Popularity Descending</option>
-              <option value="popularity.asc">Popularity Ascending</option>
-              <option value="Rating Descending">Rating Descending</option>
-              <option value="Rating Ascending">Rating Ascending</option>
-              <option value="Release Date Descending">
-                Release Date Descending
-              </option>
-              <option value="Release Date Ascending">
-                Release Date Ascending
-              </option>
-              <option value="Title(A-Z)">Title (A-Z)</option>
-              <option value="Title(Z-A)">Title (Z-A)</option>
+              <option value="popularity_desc">Popularity Descending</option>
+              <option value="popularity_asc">Popularity Ascending</option>
+              <option value="voteAverage_desc">Rating Descending</option>
+              <option value="voteAverage_asc">Rating Ascending</option>
+              <option value="release_date_desc">Release Date Descending</option>
+              <option value="release_date_asc">Release Date Ascending</option>
+              <option value="title_asc">Title (A-Z)</option>
+              <option value="title_desc">Title (Z-A)</option>
             </Field>
             {/* </form> */}
           </div>

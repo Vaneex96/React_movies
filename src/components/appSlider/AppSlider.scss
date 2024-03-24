@@ -1,16 +1,9 @@
 .app_slider {
-  background: url("../../resources/slider_bg1.jpg") center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 600px;
-  width: auto;
   .movies_carousel {
     width: auto;
-    height: 400px;
-    img {
-      height: 400px;
-      width: auto;
-    }
+    height: 600px;
+    display: flex;
+    align-items: flex-start;
+    overflow: hidden;
   }
 }
